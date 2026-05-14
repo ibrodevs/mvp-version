@@ -1,6 +1,7 @@
 // web-results.jsx — Web Search Results page.
 
 function DDWebResultRow({ c, t, dark, sup, onOpenSupplier }) {
+  const { isMobile } = useDDViewport();
   return (
     <div style={{
       borderRadius: 18, overflow: 'hidden',
@@ -44,7 +45,7 @@ function DDWebResultRow({ c, t, dark, sup, onOpenSupplier }) {
         <div style={{ fontSize: 12.5, color: c.muted, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 5 }}>
           {DDIcons.pin(12, c.muted)} {ddLocation(sup, t)}
         </div>
-        <div style={{ display: 'flex', gap: 8 }}>
+        <div style={{ display: 'flex', gap: 8, flexDirection: isMobile ? 'column' : 'row' }}>
           <button
             onClick={() => onOpenSupplier && onOpenSupplier(sup)}
             style={{
@@ -67,6 +68,20 @@ function DDWebResultRow({ c, t, dark, sup, onOpenSupplier }) {
 
 // Sidebar filters — simple checkboxes
 function DDWebFilterSidebar({ c, t, dark }) {
+  const { isMobile, isTablet } = useDDViewport();
+  if (isMobile) {
+    const chips = [t.f_wholesale, t.sec_east, t.sec_west, t.f_verified];
+    return (
+      <div style={{
+        display: 'flex', gap: 8, overflowX: 'auto', padding: '12px 16px 0',
+        background: c.surface, borderBottom: `1px solid ${c.line}`,
+      }}>
+        {chips.map((chip, i) => (
+          <DDChip key={i} c={c} active={i < 2}>{chip}</DDChip>
+        ))}
+      </div>
+    );
+  }
   const sections = [
     {
       key: 'type', label: tw_filter_type(t),
@@ -94,8 +109,8 @@ function DDWebFilterSidebar({ c, t, dark }) {
   ];
   return (
     <div style={{
-      width: 240, flexShrink: 0,
-      padding: '24px 8px 24px 32px',
+      width: isTablet ? 210 : 240, flexShrink: 0,
+      padding: isTablet ? '20px 8px 20px 20px' : '24px 8px 24px 32px',
       borderRight: `1px solid ${c.line}`, background: c.bg,
       overflow: 'auto',
     }}>
@@ -143,6 +158,8 @@ function tw_clear(t)         { if (t === DD_I18N.kg) return 'Тазалоо'; if
 function tw_no_results(t)    { if (t === DD_I18N.kg) return 'Табылган жок?'; if (t === DD_I18N.en) return 'Not found?'; return 'Не нашли?'; }
 
 function DDWebResults({ c, t, dark, query = 'куртки женские оптом', onNavigate, onSearch }) {
+  const { isMobile, isTablet } = useDDViewport();
+  const compact = isMobile || isTablet;
   return (
     <div style={{
       width: '100%', height: '100%', background: c.bg, color: c.text,
@@ -151,14 +168,14 @@ function DDWebResults({ c, t, dark, query = 'куртки женские опт�
     }}>
       <DDWebHeader c={c} t={t} dark={dark} page="results" search={query} onNavigate={onNavigate} onSearch={onSearch} />
 
-      <div style={{ flex: 1, display: 'flex', overflow: 'hidden', background: c.surface }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: isMobile ? 'column' : 'row', overflow: 'hidden', background: c.surface }}>
         <DDWebFilterSidebar c={c} t={t} dark={dark} />
 
         {/* Main content */}
-        <div style={{ flex: 1, overflow: 'auto', padding: '24px 32px' }}>
+        <div style={{ flex: 1, overflow: 'auto', padding: compact ? '16px' : '24px 32px' }}>
           {/* Result count + sort */}
           <div style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18,
+            display: 'flex', alignItems: compact ? 'flex-start' : 'center', flexDirection: compact ? 'column' : 'row', justifyContent: 'space-between', gap: compact ? 12 : 0, marginBottom: 18,
           }}>
             <div>
               <h1 style={{ margin: 0, fontSize: 22, fontWeight: 700, letterSpacing: -0.4, color: c.text }}>
@@ -180,7 +197,7 @@ function DDWebResults({ c, t, dark, query = 'куртки женские опт�
 
           {/* Grid */}
           <div style={{
-            display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16,
+            display: 'grid', gridTemplateColumns: isMobile ? '1fr' : isTablet ? 'repeat(2, 1fr)' : 'repeat(3, 1fr)', gap: 16,
           }}>
               {DD_SUPPLIERS_RU.map(sup => (
               <DDWebResultRow key={sup.id} c={c} t={t} dark={dark} sup={sup} onOpenSupplier={() => onNavigate && onNavigate('supplier')} />
@@ -192,7 +209,7 @@ function DDWebResults({ c, t, dark, query = 'куртки женские опт�
             marginTop: 22,
             padding: '18px 22px', borderRadius: 18,
             background: c.primary, color: '#fff',
-            display: 'flex', alignItems: 'center', gap: 16,
+            display: 'flex', alignItems: compact ? 'flex-start' : 'center', flexDirection: compact ? 'column' : 'row', gap: 16,
             position: 'relative', overflow: 'hidden',
           }}>
             <svg width="180" height="100" style={{ position: 'absolute', right: 24, top: -6, opacity: 0.16 }} viewBox="0 0 180 100">
@@ -224,6 +241,7 @@ function DDWebResults({ c, t, dark, query = 'куртки женские опт�
               background: c.accent, color: '#1F1500',
               fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
               display: 'flex', alignItems: 'center', gap: 6, position: 'relative',
+              width: isMobile ? '100%' : 'auto', justifyContent: 'center',
             }}>{t.rq_cta} {DDIcons.arrow(15, '#1F1500')}</button>
           </div>
 

@@ -6,6 +6,8 @@ function tw_req_step3(t) { if (t === DD_I18N.kg) return 'WhatsApp\'ка жооп
 function tw_req_hero(t)  { if (t === DD_I18N.kg) return 'Биз сизге сатуучу табабыз'; if (t === DD_I18N.en) return 'We\u2019ll find a supplier for you'; return 'Мы найдём поставщика за вас'; }
 
 function DDWebRequest({ c, t, dark, onNavigate, onSubmit, submitted = false }) {
+  const { isMobile, isTablet } = useDDViewport();
+  const compact = isMobile || isTablet;
   const Field = ({ label, ph, multiline = false }) => (
     <div style={{ marginBottom: 16 }}>
       <div style={{ fontSize: 13, fontWeight: 700, color: c.text, marginBottom: 8 }}>{label}</div>
@@ -32,7 +34,7 @@ function DDWebRequest({ c, t, dark, onNavigate, onSubmit, submitted = false }) {
       <div style={{ flex: 1, overflow: 'auto', background: c.surface }}>
         {/* Hero */}
         <div style={{
-          padding: '28px 40px 24px',
+          padding: compact ? '24px 16px 20px' : '28px 40px 24px',
           maxWidth: 1100, margin: '0 auto', width: '100%', boxSizing: 'border-box',
           textAlign: 'center', position: 'relative',
         }}>
@@ -46,19 +48,19 @@ function DDWebRequest({ c, t, dark, onNavigate, onSubmit, submitted = false }) {
             ? {t.notfound}
           </div>
           <h1 style={{
-            margin: 0, fontSize: 40, fontWeight: 800, letterSpacing: -1.2, lineHeight: 1.05,
+            margin: 0, fontSize: isMobile ? 32 : isTablet ? 36 : 40, fontWeight: 800, letterSpacing: -1.2, lineHeight: 1.05,
             color: c.text, maxWidth: 720, marginLeft: 'auto', marginRight: 'auto',
           }}>{tw_req_hero(t)}</h1>
           <p style={{
-            margin: '14px auto 0', fontSize: 16, color: c.muted, lineHeight: 1.45, maxWidth: 540,
+            margin: '14px auto 0', fontSize: isMobile ? 15 : 16, color: c.muted, lineHeight: 1.45, maxWidth: 540,
           }}>{t.notfound_sub}</p>
         </div>
 
         {/* Split: form left, info right */}
         <div style={{
-          padding: '4px 40px 28px',
+          padding: compact ? '4px 16px 28px' : '4px 40px 28px',
           maxWidth: 1100, margin: '0 auto', width: '100%', boxSizing: 'border-box',
-          display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 24,
+          display: 'grid', gridTemplateColumns: compact ? '1fr' : '1.4fr 1fr', gap: 24,
         }}>
           {/* Form card */}
           <div style={{
@@ -67,7 +69,7 @@ function DDWebRequest({ c, t, dark, onNavigate, onSubmit, submitted = false }) {
             boxShadow: dark ? 'none' : '0 4px 14px rgba(17,24,39,0.05)',
           }}>
             <Field label={t.rq_name} ph={t.rq_name_ph} multiline />
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: 14 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1.2fr', gap: 14 }}>
               <Field label={t.rq_qty} ph={t.rq_qty_ph} />
               <Field label={t.rq_budget} ph={t.rq_budget_ph} />
             </div>
@@ -75,7 +77,8 @@ function DDWebRequest({ c, t, dark, onNavigate, onSubmit, submitted = false }) {
 
             {/* WhatsApp affordance */}
             <div style={{
-              display: 'flex', alignItems: 'center', gap: 12,
+              display: 'flex', alignItems: isMobile ? 'flex-start' : 'center', gap: 12,
+              flexDirection: isMobile ? 'column' : 'row',
               padding: '12px 14px', background: c.surface, borderRadius: 14,
               marginBottom: 16,
             }}>

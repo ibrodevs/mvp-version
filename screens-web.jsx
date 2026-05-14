@@ -2,6 +2,9 @@
 // Uses DDWebHeader + DDWebFooter from web-shared.jsx.
 
 function DDWebHome({ c, t, dark, onNavigate, onSearch, query = 'куртки женские оптом' }) {
+  const { isMobile, isTablet } = useDDViewport();
+  const compact = isMobile || isTablet;
+  const categoryColumns = isMobile ? 'repeat(2, 1fr)' : isTablet ? 'repeat(3, 1fr)' : 'repeat(4, 1fr)';
   return (
     <div style={{
       width: '100%', height: '100%', background: c.bg, color: c.text,
@@ -15,6 +18,7 @@ function DDWebHome({ c, t, dark, onNavigate, onSearch, query = 'куртки ж�
       <svg width="640" height="380" style={{
         position: 'absolute', top: 100, left: '50%', transform: 'translateX(-50%)',
         opacity: dark ? 0.05 : 0.04, pointerEvents: 'none',
+        display: isMobile ? 'none' : 'block',
       }} viewBox="0 0 640 380">
         <g fill={c.primary}>
           {[40, 120, 200, 280, 360, 440, 520, 600].map(x =>
@@ -34,7 +38,7 @@ function DDWebHome({ c, t, dark, onNavigate, onSearch, query = 'куртки ж�
       {/* Centered hero */}
       <div style={{
         display: 'flex', flexDirection: 'column', alignItems: 'center',
-        padding: '36px 40px 28px', position: 'relative', zIndex: 1, flexShrink: 0,
+        padding: compact ? '28px 16px 24px' : '36px 40px 28px', position: 'relative', zIndex: 1, flexShrink: 0,
       }}>
         {/* Big mark */}
         <div style={{ position: 'relative', marginBottom: 6 }}>
@@ -54,13 +58,13 @@ function DDWebHome({ c, t, dark, onNavigate, onSearch, query = 'куртки ж�
         </div>
 
         <h1 style={{
-          margin: '20px 0 12px', fontSize: 52, lineHeight: 1.0, fontWeight: 800,
+          margin: '20px 0 12px', fontSize: isMobile ? 34 : isTablet ? 42 : 52, lineHeight: 1.0, fontWeight: 800,
           letterSpacing: -2, color: c.text, textAlign: 'center', maxWidth: 760,
         }}>
           {t.web_h1}
         </h1>
         <p style={{
-          margin: 0, marginBottom: 30, fontSize: 17, color: c.muted, lineHeight: 1.45,
+          margin: 0, marginBottom: 30, fontSize: isMobile ? 15 : 17, color: c.muted, lineHeight: 1.45,
           textAlign: 'center', maxWidth: 560,
         }}>
           {t.web_sub}
@@ -69,13 +73,15 @@ function DDWebHome({ c, t, dark, onNavigate, onSearch, query = 'куртки ж�
         {/* HUGE search */}
         <div style={{
           width: '100%', maxWidth: 680,
-          height: 72, borderRadius: 24,
+          minHeight: isMobile ? 132 : 72, borderRadius: 24,
           background: c.bg, border: `2px solid ${c.primary}`,
-          display: 'flex', alignItems: 'center', padding: '0 10px 0 26px', gap: 14,
+          display: 'flex', alignItems: isMobile ? 'stretch' : 'center', flexDirection: isMobile ? 'column' : 'row', padding: isMobile ? '16px' : '0 10px 0 26px', gap: 14,
           boxShadow: dark ? '0 14px 36px rgba(0,0,0,0.5)' : '0 18px 40px rgba(30,58,138,0.16)',
         }}>
-          {DDIcons.search(22, c.primary)}
-          <span style={{ flex: 1, fontSize: 16, color: c.muted }}>{t.search_hint}</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, width: '100%' }}>
+            {DDIcons.search(22, c.primary)}
+            <span style={{ flex: 1, fontSize: 16, color: c.muted }}>{t.search_hint}</span>
+          </div>
           <button
             onClick={() => onSearch ? onSearch(query) : onNavigate && onNavigate('results')}
             style={{
@@ -83,6 +89,7 @@ function DDWebHome({ c, t, dark, onNavigate, onSearch, query = 'куртки ж�
             background: c.primary, color: '#fff',
             fontSize: 15, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
             display: 'flex', alignItems: 'center', gap: 8,
+            width: isMobile ? '100%' : 'auto', justifyContent: 'center',
           }}>
             {DDIcons.search(16, '#fff')} {tw_find(t)}
           </button>
@@ -102,11 +109,11 @@ function DDWebHome({ c, t, dark, onNavigate, onSearch, query = 'куртки ж�
 
       {/* 3-step band */}
       <div style={{
-        background: c.surface, padding: '22px 40px', borderTop: `1px solid ${c.line}`,
+        background: c.surface, padding: compact ? '22px 16px' : '22px 40px', borderTop: `1px solid ${c.line}`,
         position: 'relative', zIndex: 2, flexShrink: 0,
       }}>
         <div style={{
-          display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 28,
+          display: 'grid', gridTemplateColumns: compact ? '1fr' : '1fr 1fr 1fr', gap: compact ? 16 : 28,
           maxWidth: 880, margin: '0 auto', alignItems: 'center',
         }}>
           {[
@@ -134,14 +141,14 @@ function DDWebHome({ c, t, dark, onNavigate, onSearch, query = 'куртки ж�
 
       {/* Categories grid section */}
       <div style={{
-        padding: '32px 40px 24px', flexShrink: 0,
+        padding: compact ? '28px 16px 24px' : '32px 40px 24px', flexShrink: 0,
         maxWidth: 1100, width: '100%', margin: '0 auto', boxSizing: 'border-box',
       }}>
         <h2 style={{
           margin: 0, marginBottom: 16, fontSize: 22, fontWeight: 700, letterSpacing: -0.5,
           color: c.text,
         }}>{tw_all_cats(t)}</h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: categoryColumns, gap: 14 }}>
           {[
             { i: 0, hue: 340 }, { i: 1, hue: 30 }, { i: 2, hue: 12 }, { i: 3, hue: 280 },
             { i: 5, hue: 200 }, { i: 6, hue: 60 }, { i: 7, hue: 150 }, { i: 4, hue: 220 },

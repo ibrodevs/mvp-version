@@ -12,6 +12,8 @@ function tw_desc_text(t) {
 }
 
 function DDWebSupplier({ c, t, dark, onNavigate, onSearch, query = 'куртки женские оптом' }) {
+  const { isMobile, isTablet } = useDDViewport();
+  const compact = isMobile || isTablet;
   const sup = DD_SUPPLIERS_RU[0];
   const similar = DD_SUPPLIERS_RU.slice(1, 4);
   const gallery = [
@@ -33,7 +35,7 @@ function DDWebSupplier({ c, t, dark, onNavigate, onSearch, query = 'куртки
       <div style={{ flex: 1, overflow: 'auto' }}>
         {/* Breadcrumb */}
         <div style={{
-          padding: '14px 40px 0',
+          padding: compact ? '14px 16px 0' : '14px 40px 0',
           maxWidth: 1200, margin: '0 auto', width: '100%', boxSizing: 'border-box',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: c.muted }}>
@@ -52,18 +54,18 @@ function DDWebSupplier({ c, t, dark, onNavigate, onSearch, query = 'куртки
 
         {/* Main split */}
         <div style={{
-          padding: '20px 40px',
+          padding: compact ? '16px' : '20px 40px',
           maxWidth: 1200, margin: '0 auto', width: '100%', boxSizing: 'border-box',
-          display: 'grid', gridTemplateColumns: '1.6fr 1fr', gap: 28,
+          display: 'grid', gridTemplateColumns: compact ? '1fr' : '1.6fr 1fr', gap: 28,
         }}>
           {/* Left: hero + gallery + description */}
           <div>
             {/* Hero photo */}
             <div style={{ borderRadius: 22, overflow: 'hidden', marginBottom: 12 }}>
-              <DDPhoto label={sup.photoLabel} hue={sup.hue} height={340} radius={0} dark={dark} />
+              <DDPhoto label={sup.photoLabel} hue={sup.hue} height={isMobile ? 240 : 340} radius={0} dark={dark} />
             </div>
             {/* Gallery strip */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 8, marginBottom: 22 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(3, 1fr)' : 'repeat(6, 1fr)', gap: 8, marginBottom: 22 }}>
               {gallery.map((g, i) => (
                 <DDPhoto key={i} label={g.lbl} hue={g.hue} height={62} radius={10} dark={dark} dense />
               ))}
@@ -88,7 +90,7 @@ function DDWebSupplier({ c, t, dark, onNavigate, onSearch, query = 'куртки
           <div style={{
             background: c.surface, borderRadius: 22, padding: 22,
             border: `1px solid ${c.border}`,
-            alignSelf: 'start', position: 'sticky', top: 14,
+            alignSelf: 'start', position: compact ? 'static' : 'sticky', top: 14,
           }}>
             {/* Name + verified */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
@@ -157,13 +159,13 @@ function DDWebSupplier({ c, t, dark, onNavigate, onSearch, query = 'куртки
 
         {/* Similar suppliers */}
         <div style={{
-          padding: '12px 40px 28px',
+          padding: compact ? '12px 16px 28px' : '12px 40px 28px',
           maxWidth: 1200, margin: '0 auto', width: '100%', boxSizing: 'border-box',
         }}>
           <h2 style={{ margin: '0 0 14px', fontSize: 20, fontWeight: 700, letterSpacing: -0.4, color: c.text }}>
             {tw_similar(t)}
           </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : isTablet ? 'repeat(2, 1fr)' : 'repeat(3, 1fr)', gap: 14 }}>
             {similar.map(s => <DDWebResultRow key={s.id} c={c} t={t} dark={dark} sup={s} onOpenSupplier={() => onNavigate && onNavigate('supplier')} />)}
           </div>
         </div>

@@ -19,6 +19,7 @@ function SiteApp() {
     ...SITE_DEFAULTS,
     route: readHashRoute(),
   }));
+  const { isMobile } = useDDViewport();
 
   const c = DD_PALETTE[state.dark ? 'dark' : 'light'];
   const t = DD_I18N[state.lang] || DD_I18N.ru;
@@ -80,13 +81,14 @@ function SiteApp() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: c.bg }}>
+    <div style={{ height: '100dvh', overflow: 'hidden', background: c.bg }}>
       <div style={{
         position: 'fixed',
-        right: 20,
-        bottom: 20,
+        right: isMobile ? 16 : 20,
+        bottom: isMobile ? 16 : 20,
         zIndex: 50,
         display: 'flex',
+        flexDirection: isMobile ? 'column' : 'row',
         gap: 10,
       }}>
         <button
